@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Data;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -34,9 +34,10 @@ namespace SourceEditor
 			new SolidBrush(Color.Cyan),
 			new SolidBrush(Color.PeachPuff),
 			new SolidBrush(Color.LemonChiffon),
-			new SolidBrush(Color.LightPink),
+			new SolidBrush(Color.Moccasin),
 			new SolidBrush(Color.WhiteSmoke),
 			new SolidBrush(Color.SlateGray),
+			new SolidBrush(Color.LightPink),
 		};
 
 		public List<string> Lines
@@ -69,7 +70,48 @@ namespace SourceEditor
 			}
 		}
 
+		protected string[] _identifiers = new string[0];
+		public string[] Identifiers
+		{
+			get
+			{
+				return _identifiers;
+			}
+			set
+			{
+				_identifiers = value;
+				linesChanged(0, _lines.Count);
+				Refresh();
+			}
+		}
+
 		public string SingleLineComment { get; set; }
+
+		public override string Text
+		{
+			get
+			{
+				var sb = new StringBuilder();
+				foreach (var line in _lines)
+				{
+					sb.AppendLine(line);
+				}
+				return sb.ToString();
+			}
+			set
+			{
+				var delim = "\n";
+				if (value.IndexOf("\r\n") >= 0)
+				{
+					delim = "\r\n";
+				}
+				else if (value.IndexOf("\r") >= 0)
+				{
+					delim = "\r";
+				}
+				_lines = Text.Split(new string[] {delim}, StringSplitOptions.None).ToList();
+			}
+		}
 
 		public SourceEditor()
 		{
@@ -85,6 +127,33 @@ namespace SourceEditor
 			timer.Tick += timer_Tick;
 			timer.Interval = 500;
 			timer.Enabled = true;
+
+			Resize += SourceEditor_Resize;
+		}
+
+		void SourceEditor_Resize(object sender, EventArgs e)
+		{
+			Refresh();
+		}
+
+		public void LoadFromFile(string fileName)
+		{
+			_lines.Clear();
+			_line = _symbol = _vscroll = _hscroll = 0;
+			_selectionStart.X = _selectionStart.Y = _selectionEnd.X = _selectionEnd.Y = 0;
+
+			if (File.Exists(fileName))
+			{
+				var lines = File.ReadAllLines(fileName);
+				_lines.AddRange(lines);
+			}
+
+			linesChanged(0, _lines.Count);
+		}
+
+		public void SaveToFile(string fileName)
+		{
+			File.WriteAllLines(fileName, _lines);
 		}
 
 		void timer_Tick(object sender, EventArgs e)
@@ -98,6 +167,17 @@ namespace SourceEditor
 				}
 				Refresh();
 			}
+		}
+
+		public void SetColor(int index, Color color)
+		{
+			if (index < 0 || index >= _brushes.Count())
+			{
+				return;
+			}
+			_brushes[index] = new SolidBrush(color);
+			
+			Refresh();
 		}
 
 		protected void linesChanged(int first, int count)

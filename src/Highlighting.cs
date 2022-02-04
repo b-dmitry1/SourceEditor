@@ -22,12 +22,13 @@ namespace SourceEditor
 
 				var ok = true;
 
-				if (p > 0 && (Char.IsLetter(line[p - 1]) || line[p - 1] == '_'))
+				if (p > 0 && (Char.IsLetter(line[p - 1]) || Char.IsDigit(line[p - 1]) || line[p - 1] == '_'))
 				{
 					ok = false;
 				}
 
-				if (p + word.Length < line.Length - 1 && (Char.IsLetter(line[p + word.Length]) || line[p + word.Length] == '_'))
+				if (p + word.Length < line.Length - 1 && (Char.IsLetter(line[p + word.Length]) ||
+					Char.IsDigit(line[p + word.Length]) || line[p + word.Length] == '_'))
 				{
 					ok = false;
 				}
@@ -51,9 +52,15 @@ namespace SourceEditor
 				}
 
 				SetAttribute(line + i, 0, _lines[line + i].Length, 7, 0);
+
 				foreach (var word in _keywords)
 				{
 					markKeyword(_lines[line + i], line + i, word, 1, 0);
+				}
+
+				foreach (var word in _identifiers)
+				{
+					markKeyword(_lines[line + i], line + i, word, 6, 0);
 				}
 
 				for (var j = 0; j < _lines[line + i].Length; j++)

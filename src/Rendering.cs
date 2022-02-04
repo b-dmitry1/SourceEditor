@@ -30,19 +30,21 @@ namespace SourceEditor
 					{
 						var attr = _attributes[line][sym];
 
+						var left = (sym - _hscroll) * _charWidth;
+						var top = (line - _vscroll) * _charHeight;
+
 						if (((attr >> 4) & 7) > 0)
 						{
-							g.FillRectangle(_brushes[(attr >> 4) & 7],
-								(sym - _hscroll) * _charWidth, (line - _vscroll) * _charHeight, _charWidth, _charHeight);
+							g.FillRectangle(_brushes[(attr >> 4) & 7], left, top, _charWidth, _charHeight);
 						}
 
 						if (sym < _lines[line].Length)
 						{
 							g.DrawString(_lines[line][sym].ToString(), Font, _brushes[(attr & 7) == 0 ? 7 : attr & 7],
-								(sym - _hscroll) * _charWidth, (line - _vscroll) * _charHeight);
+								left, top);
 						}
 
-						if ((sym - _hscroll) * _charWidth >= ClientSize.Width)
+						if (left >= ClientSize.Width)
 						{
 							break;
 						}
@@ -51,13 +53,16 @@ namespace SourceEditor
 
 				for (; sym < _lines[line].Length; sym++)
 				{
-					if ((sym - _hscroll) * _charWidth >= ClientSize.Width)
+					var left = (sym - _hscroll) * _charWidth;
+					var top = (line - _vscroll) * _charHeight;
+
+					if (left >= ClientSize.Width)
 					{
 						break;
 					}
 
 					g.DrawString(_lines[line][sym].ToString(), Font, _brushes[7 & 7],
-						(sym - _hscroll) * _charWidth, (line - _vscroll) * _charHeight);
+						left, top);
 				}
 
 				if ((line - _vscroll) * _charHeight >= ClientSize.Height)

@@ -89,6 +89,8 @@ namespace SourceEditor
 						saveMassUndoFromStartOfSelection();
 
 						ClearSelection();
+
+						OnTextChanged(new EventArgs());
 					}
 					break;
 				case Keys.Shift | Keys.Delete:

@@ -15,6 +15,8 @@ namespace SourceEditor
 			Copy(true);
 
 			ClearSelection();
+
+			OnTextChanged(new EventArgs());
 		}
 
 		public void Copy(bool keepSelection = false)
@@ -61,6 +63,8 @@ namespace SourceEditor
 			{
 				_selectionStart = _selectionEnd;
 			}
+
+			OnTextChanged(new EventArgs());
 		}
 
 		public void Paste()
@@ -88,6 +92,8 @@ namespace SourceEditor
 			}
 
 			linesChanged(0, _lines.Count);
+
+			OnTextChanged(new EventArgs());
 		}
 
 		public void ClearSelection()

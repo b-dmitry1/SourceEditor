@@ -76,6 +76,8 @@ namespace SourceEditor
 			_symbol = undo.Symbol;
 
 			linesChanged(0, _lines.Count);
+
+			OnTextChanged(new EventArgs());
 		}
 	}
 }

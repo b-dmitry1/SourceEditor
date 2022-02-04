@@ -19,6 +19,8 @@ namespace SourceEditor
 				return;
 			}
 
+			OnTextChanged(new EventArgs());
+
 			if (user)
 			{
 				if (_selectionStart != _selectionEnd)
@@ -110,6 +112,8 @@ namespace SourceEditor
 
 			if (_symbol < _lines[_line].Length)
 			{
+				OnTextChanged(new EventArgs());
+
 				_lines[_line] = _lines[_line].Remove(_symbol, 1);
 				linesChanged(_line, 1);
 				return;
@@ -119,6 +123,8 @@ namespace SourceEditor
 			{
 				return;
 			}
+
+			OnTextChanged(new EventArgs());
 
 			if (_symbol > _lines[_line].Length)
 			{
