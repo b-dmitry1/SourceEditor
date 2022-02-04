@@ -28,7 +28,7 @@ namespace SourceEditor
 			}
 			else
 			{
-				moveCursor(_line + (e.Delta < 0 ? 3 : -3), _symbol);
+				MoveCursor(_line + (e.Delta < 0 ? 3 : -3), _symbol);
 			}
 			Refresh();
 		}
@@ -55,7 +55,7 @@ namespace SourceEditor
 
 			_selecting = true;
 			var coord = mouseToChar(e.X, e.Y);
-			moveCursor(coord.Y, coord.X);
+			MoveCursor(coord.Y, coord.X);
 			_selectionStart = coord;
 			_selectionEnd = coord;
 			Refresh();
@@ -78,14 +78,14 @@ namespace SourceEditor
 				return;
 			}
 			var coord = mouseToChar(e.X, e.Y);
-			moveCursor(coord.Y, coord.X, true);
+			MoveCursor(coord.Y, coord.X, true);
 			_selectionEnd = coord;
 			Refresh();
 		}
 
 		private void doMouseScroll(int y)
 		{
-			moveCursor(y * _lines.Count / (ClientSize.Height - 4), _symbol);
+			MoveCursor(y * _lines.Count / (ClientSize.Height - 4), _symbol);
 
 			_blink = 0;
 

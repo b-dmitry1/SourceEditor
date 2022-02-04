@@ -91,7 +91,7 @@ namespace SourceEditor
 				AddChar(ch, false);
 			}
 
-			linesChanged(0, _lines.Count);
+			LinesChanged(0, _lines.Count);
 
 			OnTextChanged(new EventArgs());
 		}
@@ -161,7 +161,7 @@ namespace SourceEditor
 
 			_selectionStart = _selectionEnd = selStart;
 
-			linesChanged(0, _lines.Count);
+			LinesChanged(0, _lines.Count);
 		}
 
 		private string getFragment(int line, int symbol, int count)

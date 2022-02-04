@@ -17,7 +17,7 @@ namespace SourceEditor
 
 			updateCharSize();
 
-			g.FillRectangle(new SolidBrush(_backgroundColor), ClientRectangle);
+			g.FillRectangle(new SolidBrush(BackColor), ClientRectangle);
 
 			drawSelection(g);
 
@@ -79,24 +79,6 @@ namespace SourceEditor
 			drawScrollBar(g);
 
 			base.OnPaint(e);
-		}
-
-		private void drawScrollBar(Graphics g)
-		{
-			g.FillRectangle(Brushes.Gray, ClientSize.Width - _scrollBarWidth, 0, _scrollBarWidth, ClientSize.Height);
-
-			if (_lines.Count == 0)
-			{
-				return;
-			}
-
-			var thumb = (int)((double)_line * (ClientSize.Height - 8.0) / _lines.Count);
-
-			g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-			g.FillEllipse(Brushes.LightGray,
-				ClientSize.Width - _scrollBarWidth + 2,
-				thumb + 2,
-				_scrollBarWidth - 4, _scrollBarWidth - 4);
 		}
 
 		private void drawSelection(Graphics g)

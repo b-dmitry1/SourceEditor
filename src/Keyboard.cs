@@ -13,11 +13,11 @@ namespace SourceEditor
 
 			if (e.KeyChar == '\r' || e.KeyChar == '\b')
 			{
-				linesChanged(_line - 1, _lines.Count - _line + 1);
+				LinesChanged(_line - 1, _lines.Count - _line + 1);
 			}
 			else
 			{
-				linesChanged(Math.Max(_line - 1, 0), 3);
+				LinesChanged(Math.Max(_line - 1, 0), 3);
 			}
 
 			Refresh();
@@ -30,52 +30,52 @@ namespace SourceEditor
 				case Keys.Shift | Keys.Right:
 					updateSelectionStart();
 					_selectionEnd.X++;
-					moveCursor(_line, _selectionEnd.X, true);
+					MoveCursor(_line, _selectionEnd.X, true);
 					break;
 				case Keys.Shift | Keys.Left:
 					updateSelectionStart();
 					_selectionEnd.X = Math.Max(_selectionEnd.X - 1, 0);
-					moveCursor(_line, _selectionEnd.X, true);
+					MoveCursor(_line, _selectionEnd.X, true);
 					break;
 				case Keys.Shift | Keys.Down:
 					updateSelectionStart();
 					_selectionEnd.Y++;
-					moveCursor(_selectionEnd.Y, _symbol, true);
+					MoveCursor(_selectionEnd.Y, _symbol, true);
 					break;
 				case Keys.Shift | Keys.Up:
 					updateSelectionStart();
 					_selectionEnd.Y = Math.Max(_selectionEnd.Y - 1, 0);
-					moveCursor(_selectionEnd.Y, _symbol, true);
+					MoveCursor(_selectionEnd.Y, _symbol, true);
 					break;
 				case Keys.Up:
-					moveCursor(_line - 1, _symbol);
+					MoveCursor(_line - 1, _symbol);
 					break;
 				case Keys.Down:
-					moveCursor(_line + 1, _symbol);
+					MoveCursor(_line + 1, _symbol);
 					break;
 				case Keys.Left:
-					moveCursor(_line, _symbol - 1);
+					MoveCursor(_line, _symbol - 1);
 					break;
 				case Keys.Right:
-					moveCursor(_line, _symbol + 1);
+					MoveCursor(_line, _symbol + 1);
 					break;
 				case Keys.Control | Keys.Home:
-					moveCursor(0, 0);
+					MoveCursor(0, 0);
 					break;
 				case Keys.Home:
-					moveCursor(_line, 0);
+					MoveCursor(_line, 0);
 					break;
 				case Keys.End:
-					moveCursor(_line, _lines[_line].Length);
+					MoveCursor(_line, _lines[_line].Length);
 					break;
 				case Keys.Control | Keys.End:
-					moveCursor(_lines.Count - 1, _lines[_lines.Count - 1].Length);
+					MoveCursor(_lines.Count - 1, _lines[_lines.Count - 1].Length);
 					break;
 				case Keys.Prior:
-					moveCursor(_line - (ClientSize.Height / _charHeight - 1), _symbol);
+					MoveCursor(_line - (ClientSize.Height / _charHeight - 1), _symbol);
 					break;
 				case Keys.Next:
-					moveCursor(_line + (ClientSize.Height / _charHeight - 1), _symbol);
+					MoveCursor(_line + (ClientSize.Height / _charHeight - 1), _symbol);
 					break;
 				case Keys.Tab:
 					break;

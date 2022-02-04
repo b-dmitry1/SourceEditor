@@ -7,7 +7,7 @@ namespace SourceEditor
 {
 	public partial class SourceEditor : UserControl
 	{
-		protected void AddChar(char ch, bool user = true)
+		public void AddChar(char ch, bool user = true)
 		{
 			while (_lines.Count <= _line)
 			{
@@ -54,7 +54,7 @@ namespace SourceEditor
 					}
 					_lines.Insert(_line + 1, new string(' ', indent));
 				}
-				moveCursor(_line + 1, indent);
+				MoveCursor(_line + 1, indent);
 			}
 			else if (ch == '\b')
 			{
@@ -72,7 +72,7 @@ namespace SourceEditor
 
 						_lines.RemoveAt(_line);
 
-						moveCursor(_line - 1, len);
+						MoveCursor(_line - 1, len);
 					}
 				}
 				else
@@ -85,7 +85,7 @@ namespace SourceEditor
 					{
 						_lines[_line] = _lines[_line].Remove(_symbol - 1, 1);
 					}
-					moveCursor(_line, _symbol - 1);
+					MoveCursor(_line, _symbol - 1);
 				}
 			}
 			else
@@ -99,11 +99,11 @@ namespace SourceEditor
 				{
 					_lines[_line] = _lines[_line].Insert(_symbol, ch.ToString());
 				}
-				moveCursor(_line, _symbol + 1);
+				MoveCursor(_line, _symbol + 1);
 			}
 		}
 
-		private void DeleteChar()
+		public void DeleteChar()
 		{
 			if (_line >= _lines.Count)
 			{
@@ -115,7 +115,7 @@ namespace SourceEditor
 				OnTextChanged(new EventArgs());
 
 				_lines[_line] = _lines[_line].Remove(_symbol, 1);
-				linesChanged(_line, 1);
+				LinesChanged(_line, 1);
 				return;
 			}
 
@@ -135,7 +135,7 @@ namespace SourceEditor
 
 			_lines.RemoveAt(_line + 1);
 
-			linesChanged(_line - 1, _lines.Count - _line + 1);
+			LinesChanged(_line - 1, _lines.Count - _line + 1);
 		}
 	}
 }

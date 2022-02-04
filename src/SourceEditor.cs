@@ -18,28 +18,12 @@ namespace SourceEditor
 		protected int _symbol = 0;
 		protected int _hscroll = 0;
 		protected int _vscroll = 0;
-		protected Color _backgroundColor = Color.DimGray;
 		protected int _charWidth = 0;
 		protected int _charHeight = 0;
 		protected int _blink = 0;
 		protected bool _selecting = false;
 		protected Point _selectionStart = new Point();
 		protected Point _selectionEnd = new Point();
-		protected const int _scrollBarWidth = 16;
-		protected Brush[] _brushes = new SolidBrush[]
-		{
-			new SolidBrush(Color.Black),
-			new SolidBrush(Color.LightSkyBlue),
-			new SolidBrush(Color.LightGreen),
-			new SolidBrush(Color.Cyan),
-			new SolidBrush(Color.PeachPuff),
-			new SolidBrush(Color.LemonChiffon),
-			new SolidBrush(Color.Moccasin),
-			new SolidBrush(Color.WhiteSmoke),
-			new SolidBrush(Color.SlateGray),
-			new SolidBrush(Color.LightPink),
-		};
-
 		public List<string> Lines
 		{
 			get
@@ -50,7 +34,7 @@ namespace SourceEditor
 			{
 				_line = _vscroll = _symbol = _hscroll = 0;
 				_lines = value;
-				linesChanged(0, _lines.Count);
+				LinesChanged(0, _lines.Count);
 				Refresh();
 			}
 		}
@@ -65,7 +49,7 @@ namespace SourceEditor
 			set
 			{
 				_keywords = value;
-				linesChanged(0, _lines.Count);
+				LinesChanged(0, _lines.Count);
 				Refresh();
 			}
 		}
@@ -80,7 +64,7 @@ namespace SourceEditor
 			set
 			{
 				_identifiers = value;
-				linesChanged(0, _lines.Count);
+				LinesChanged(0, _lines.Count);
 				Refresh();
 			}
 		}
@@ -119,6 +103,8 @@ namespace SourceEditor
 
 			Font = new Font("Consolas", 10.0f);
 
+			BackColor = Color.DimGray;
+
 			DoubleBuffered = true;
 
 			SingleLineComment = "//";
@@ -148,7 +134,7 @@ namespace SourceEditor
 				_lines.AddRange(lines);
 			}
 
-			linesChanged(0, _lines.Count);
+			LinesChanged(0, _lines.Count);
 		}
 
 		public void SaveToFile(string fileName)
@@ -169,18 +155,7 @@ namespace SourceEditor
 			}
 		}
 
-		public void SetColor(int index, Color color)
-		{
-			if (index < 0 || index >= _brushes.Count())
-			{
-				return;
-			}
-			_brushes[index] = new SolidBrush(color);
-			
-			Refresh();
-		}
-
-		protected void linesChanged(int first, int count)
+		public void LinesChanged(int first, int count)
 		{
 			first = Math.Max(0, first);
 			count = Math.Min(_lines.Count - first, count);
@@ -223,7 +198,7 @@ namespace SourceEditor
 				_attributes[line][symbol + i] = (charColor & 7) + ((backgroundColor & 7) << 4);
 		}
 
-		protected void moveCursor(int line, int symbol, bool keepSelection = false)
+		public void MoveCursor(int line, int symbol, bool keepSelection = false)
 		{
 			line = Math.Max(line, 0);
 			symbol = Math.Max(symbol, 0);

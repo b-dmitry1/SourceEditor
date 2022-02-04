@@ -37,6 +37,9 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="src\Colors.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="src\CopyPasta.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -53,6 +56,9 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="src\Rendering.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="src\ScrollBar.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="src\SourceEditor.cs">
