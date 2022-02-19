@@ -127,15 +127,6 @@ namespace SourceEditor
 			_multilineCommentStartSymbols.Add("/*");
 			_multilineCommentEndSymbols.Add("*/");
 
-			_lines.Add("Font = new Font(\"Consolas\", 10.0f);");
-
-			_lines.Add("BackColor = /*Color.*/DimGray;");
-
-			_lines.Add("DoubleBuffered = true;");
-
-			_lines.Add("SingleLineComment = \"//\";\");");
-
-
 			var timer = new Timer();
 			timer.Tick += timer_Tick;
 			timer.Interval = 500;
