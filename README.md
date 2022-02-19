@@ -3,6 +3,7 @@
 - Syntax highlighting
 - Keyboard and mouse control
 - Cut, Copy, Paste, Delete
+- Text block drag and drop
 - Zooming with Ctrl+Wheel
 - Undo
 

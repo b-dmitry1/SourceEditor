@@ -73,7 +73,18 @@ namespace SourceEditor
 
 			if (_blink < 2 && Focused)
 			{
-				g.FillRectangle(Brushes.White, (_symbol - _hscroll) * _charWidth + 2, (_line - _vscroll + 1) * _charHeight - 2, _charWidth, 2);
+				switch (_cursorShape)
+				{ 
+					case CursorShapeKind.Block:
+						g.FillRectangle(Brushes.White, (_symbol - _hscroll) * _charWidth + 3, (_line - _vscroll) * _charHeight + 1, _charWidth, _charHeight - 3);
+						break;
+					case CursorShapeKind.Underline:
+						g.FillRectangle(Brushes.White, (_symbol - _hscroll) * _charWidth + 2, (_line - _vscroll + 1) * _charHeight - 2, _charWidth, 2);
+						break;
+					case CursorShapeKind.Vertical:
+						g.FillRectangle(Brushes.White, (_symbol - _hscroll) * _charWidth + 2, (_line - _vscroll) * _charHeight + 1, 2, _charHeight - 3);
+						break;
+				}
 			}
 
 			drawScrollBar(g);

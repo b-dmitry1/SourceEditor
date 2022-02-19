@@ -71,8 +71,6 @@ namespace SourceEditor
 					}
 				}
 
-				markComments(line + i);
-
 				var found = false;
 				for (var j = 0; j < _lines[line + i].Length; j++)
 				{
@@ -89,15 +87,127 @@ namespace SourceEditor
 						}
 					}
 				}
+
+				markComments(line + i);
 			}
+
+			markMultilineComments();
 		}
 
 		private void markComments(int line)
 		{
-			var p = _lines[line].IndexOf(SingleLineComment);
-			if (p >= 0)
+			int p = -1;
+			while (true)
 			{
-				SetAttribute(line, p, _lines[line].Length - p, 2, 0);
+				p = _lines[line].IndexOf(SingleLineComment, p + 1);
+				if (p >= 0)
+				{
+					if (GetAttr(line, p) != (int)EditorColor.Strings)
+					{
+						SetAttribute(line, p, _lines[line].Length - p, 2, 0);
+					}
+				}
+				else
+				{
+					break;
+				}
+			}
+		}
+
+		private void markMultilineComments(string start, string end)
+		{
+			var comment = false;
+			var startline = 0;
+			var startsym = 0;
+
+			for (int line = 0, pos = 0; line < _lines.Count;)
+			{
+				if (comment)
+				{
+					pos = _lines[line].IndexOf(end, pos);
+					if (pos < 0)
+					{
+						if (startline == line)
+						{
+							SetAttribute(line, startsym, _lines[line].Length - startsym, (int)EditorColor.MultilineComments, 0);
+						}
+						else
+						{
+							SetAttribute(line, 0, _lines[line].Length, (int)EditorColor.MultilineComments, 0);
+						}
+						line++;
+						pos = 0;
+						continue;
+					}
+					else
+					{
+						pos += end.Length;
+
+						if (startline == line)
+						{
+							SetAttribute(line, startsym, pos - startsym, (int)EditorColor.MultilineComments, 0);
+						}
+						else
+						{
+							SetAttribute(line, 0, pos, (int)EditorColor.MultilineComments, 0);
+						}
+
+						comment = !comment;
+					}
+				}
+				else
+				{
+					pos = _lines[line].IndexOf(start, pos);
+					if (pos < 0)
+					{
+						line++;
+						pos = 0;
+						continue;
+					}
+					startline = line;
+					startsym = pos;
+
+					pos += start.Length;
+
+					comment = !comment;
+				}
+
+				/*
+				if (comment)
+				{
+					if (startline == line)
+					{
+						SetAttribute(line, startsym, _lines[line].Length - startsym, (int)EditorColor.MultilineComments, 0);
+					}
+					else
+					{
+						SetAttribute(line, 0, _lines[line].Length, (int)EditorColor.MultilineComments, 0);
+					}
+				}
+				*/
+			}
+		}
+
+		private void markMultilineComments()
+		{
+			for (var line = 0; line < _attributes.Count; line++)
+			{
+				for (var sym = 0; sym < _attributes[line].Length; sym++)
+				{
+					if (_attributes[line][sym] == (int)EditorColor.MultilineComments)
+					{
+						_attributes[line][sym] = 0;
+					}
+				}
+			}
+
+			for (var index = 0; index < _multilineCommentStartSymbols.Count; index++)
+			{
+				if (index >= _multilineCommentEndSymbols.Count)
+				{
+					break;
+				}
+				markMultilineComments(_multilineCommentStartSymbols[index], _multilineCommentEndSymbols[index]);
 			}
 		}
 	}

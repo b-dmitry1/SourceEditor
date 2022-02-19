@@ -21,7 +21,7 @@ namespace SourceEditor
 			new SolidBrush(Color.Black),
 			new SolidBrush(Color.LightSkyBlue),
 			new SolidBrush(Color.LightGreen),
-			new SolidBrush(Color.Cyan),
+			new SolidBrush(Color.LimeGreen),
 			new SolidBrush(Color.PeachPuff),
 			new SolidBrush(Color.LemonChiffon),
 			new SolidBrush(Color.Moccasin),
@@ -32,7 +32,7 @@ namespace SourceEditor
 
 		public enum EditorColor
 		{
-			Keywords = 1, Comments, Strings = 4, Punctuation, Identifiers, Default
+			Keywords = 1, Comments, MultilineComments, Strings = 4, Punctuation, Identifiers, Default
 		}
 
 		public void SetColor(EditorColor index, Color color)

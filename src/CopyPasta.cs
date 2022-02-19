@@ -8,19 +8,25 @@ namespace SourceEditor
 {
 	public partial class SourceEditor : UserControl
 	{
-		public void Cut()
+		protected string _altClipboard = string.Empty;
+
+		public void Cut(bool toAltClipboard = false)
 		{
+			preventAddingCharsToLastUndo();
+
 			saveMassUndoFromStartOfSelection();
 
-			Copy(true);
+			Copy(true, toAltClipboard);
 
 			ClearSelection();
 
 			OnTextChanged(new EventArgs());
 		}
 
-		public void Copy(bool keepSelection = false)
+		public void Copy(bool keepSelection = false, bool toAltClipboard = false)
 		{
+			preventAddingCharsToLastUndo();
+
 			if (_selectionStart == _selectionEnd)
 			{
 				return;
@@ -57,7 +63,14 @@ namespace SourceEditor
 				}
 			}
 
-			Clipboard.SetText(text.ToString());
+			if (toAltClipboard)
+			{
+				_altClipboard = text.ToString();
+			}
+			else
+			{
+				Clipboard.SetText(text.ToString());
+			}
 
 			if (!keepSelection)
 			{
@@ -67,9 +80,11 @@ namespace SourceEditor
 			OnTextChanged(new EventArgs());
 		}
 
-		public void Paste()
+		public void Paste(bool fromAltClipboard = false)
 		{
-			if (!Clipboard.ContainsText())
+			preventAddingCharsToLastUndo();
+
+			if (!fromAltClipboard && !Clipboard.ContainsText())
 			{
 				return;
 			}
@@ -85,7 +100,7 @@ namespace SourceEditor
 
 			ClearSelection();
 
-			var text = Clipboard.GetText();
+			var text = fromAltClipboard ? _altClipboard : Clipboard.GetText();
 			foreach (var ch in text)
 			{
 				AddChar(ch, false);
@@ -98,6 +113,8 @@ namespace SourceEditor
 
 		public void ClearSelection()
 		{
+			preventAddingCharsToLastUndo();
+
 			if (_selectionStart == _selectionEnd)
 			{
 				return;
@@ -139,6 +156,11 @@ namespace SourceEditor
 					for (var i = 0; i < selEnd.Y - selStart.Y; i++)
 					{
 						_lines.RemoveAt(selStart.Y);
+					}
+
+					if (selEnd.X > 0)
+					{
+						_lines[selStart.Y] = _lines[selStart.Y].Substring(selEnd.X);
 					}
 				}
 				else

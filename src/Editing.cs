@@ -90,7 +90,10 @@ namespace SourceEditor
 			}
 			else
 			{
-				saveCharUndo();
+				if (user)
+				{
+					saveCharUndo();
+				}
 				if (_lines[_line].Length < _symbol)
 				{
 					_lines[_line] += new string(' ', _symbol - _lines[_line].Length) + ch;

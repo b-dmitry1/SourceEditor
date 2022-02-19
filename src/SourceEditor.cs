@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -71,6 +72,20 @@ namespace SourceEditor
 
 		public string SingleLineComment { get; set; }
 
+		protected List<string> _multilineCommentStartSymbols = new List<string>();
+		public List<string> MultilineCommentStartSymbols { get { return _multilineCommentStartSymbols; } }
+
+		protected List<string> _multilineCommentEndSymbols = new List<string>();
+		public List<string> MultilineCommentEndSymbols { get { return _multilineCommentEndSymbols; } }
+
+		public enum CursorShapeKind
+		{
+			Vertical, Underline, Block
+		}
+
+		protected CursorShapeKind _cursorShape = CursorShapeKind.Vertical;
+		public CursorShapeKind CursorShape { get { return _cursorShape; } set { _cursorShape = value; } }
+
 		public override string Text
 		{
 			get
@@ -103,11 +118,23 @@ namespace SourceEditor
 
 			Font = new Font("Consolas", 10.0f);
 
-			BackColor = Color.DimGray;
+			BackColor = Color.FromArgb(0x44, 0x44, 0x44);
 
 			DoubleBuffered = true;
 
 			SingleLineComment = "//";
+
+			_multilineCommentStartSymbols.Add("/*");
+			_multilineCommentEndSymbols.Add("*/");
+
+			_lines.Add("Font = new Font(\"Consolas\", 10.0f);");
+
+			_lines.Add("BackColor = /*Color.*/DimGray;");
+
+			_lines.Add("DoubleBuffered = true;");
+
+			_lines.Add("SingleLineComment = \"//\";\");");
+
 
 			var timer = new Timer();
 			timer.Tick += timer_Tick;
@@ -115,6 +142,8 @@ namespace SourceEditor
 			timer.Enabled = true;
 
 			Resize += SourceEditor_Resize;
+
+			LinesChanged(0, _lines.Count);
 		}
 
 		void SourceEditor_Resize(object sender, EventArgs e)
@@ -135,6 +164,8 @@ namespace SourceEditor
 			}
 
 			LinesChanged(0, _lines.Count);
+
+			_undo.Clear();
 		}
 
 		public void SaveToFile(string fileName)
@@ -205,6 +236,11 @@ namespace SourceEditor
 			line = Math.Min(_lines.Count - 1, line);
 
 			line = Math.Max(line, 0);
+
+			if (line != _line)
+			{
+				preventAddingCharsToLastUndo();
+			}
 
 			_line = line;
 			_symbol = symbol;

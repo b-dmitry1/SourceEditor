@@ -7,6 +7,8 @@ namespace SourceEditor
 {
 	public partial class SourceEditor : UserControl
 	{
+		public static int SameLineUndoChars = 5;
+
 		protected Stack<UndoRecord> _undo = new Stack<UndoRecord>();
 
 		protected class UndoRecord
@@ -15,12 +17,35 @@ namespace SourceEditor
 			public int Symbol;
 			public int First;
 			public int LinesChanged;
+			public int CharsLeft;
 			public List<string> Text = new List<string>();
+		}
+
+		protected void preventAddingCharsToLastUndo()
+		{
+			if (_undo.Count > 0)
+			{
+				var top = _undo.Peek();
+				{
+					top.CharsLeft = 0;
+				}
+			}
 		}
 
 		protected void saveCharUndo()
 		{
-			var undo = new UndoRecord { Line = _line, Symbol = _symbol, First = _line, LinesChanged = 1 };
+			if (_undo.Count > 0)
+			{
+				var top = _undo.Peek();
+				if (top.Line == _line && top.First == _line && top.LinesChanged == 1 && top.CharsLeft > 0)
+				{
+					// Same line
+					top.CharsLeft--;
+					return;
+				}
+			}
+
+			var undo = new UndoRecord { Line = _line, Symbol = _symbol, First = _line, LinesChanged = 1, CharsLeft = SameLineUndoChars };
 			undo.Text.Add(_lines[_line]);
 			_undo.Push(undo);
 		}
@@ -38,10 +63,10 @@ namespace SourceEditor
 			}
 
 			startLine = Math.Max(0, startLine);
-			changed = Math.Min(_lines.Count - changed, changed);
-			save = Math.Min(_lines.Count - save, save);
+			changed = Math.Min(_lines.Count - startLine, changed);
+			save = Math.Min(_lines.Count - startLine, save);
 
-			var undo = new UndoRecord { Line = _line, Symbol = _symbol, First = startLine, LinesChanged = changed };
+			var undo = new UndoRecord { Line = _selectionStart.Y, Symbol = _selectionStart.X, First = startLine, LinesChanged = changed };
 			for (var i = undo.First; i < save + undo.First; i++)
 			{
 				undo.Text.Add(_lines[i]);
@@ -72,8 +97,10 @@ namespace SourceEditor
 
 			_lines.InsertRange(undo.First, undo.Text);
 
-			_line = undo.Line;
-			_symbol = undo.Symbol;
+			// _line = undo.Line;
+			// _symbol = undo.Symbol;
+
+			MoveCursor(undo.Line, undo.Symbol);
 
 			LinesChanged(0, _lines.Count);
 
